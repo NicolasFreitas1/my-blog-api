@@ -19,10 +19,6 @@ export class UserEntity implements User {
   password: string;
 
   /**
-   *  Id do perfil do usuário
-   */
-  userProfileId: number;
-  /**
    * Data de criação do usuário
    */
   createdAt: Date;

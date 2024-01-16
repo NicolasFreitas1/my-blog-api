@@ -24,15 +24,15 @@ export class CommentService {
     return createComment;
   }
 
-  async commentOnAnswer(
+  async commentOnComment(
     currentUser: UserEntity,
-    answerId: number,
+    commentId: number,
     createCommentDto: CreateCommentDto,
   ): Promise<Comment> {
     const createComment = await this.prisma.comment.create({
       data: {
         ...createCommentDto,
-        answerId,
+        parentCommentId: commentId,
         authorId: currentUser.id,
       },
     });
@@ -47,6 +47,17 @@ export class CommentService {
     });
   }
 
+  findAllByPostWithChildComments(postId: number) {
+    return this.prisma.comment.findMany({
+      where: {
+        postId,
+      },
+      include: {
+        comments: true,
+      },
+    });
+  }
+
   findOne(id: number) {
     return this.prisma.post.findUniqueOrThrow({ where: { id } });
   }
@@ -54,7 +65,7 @@ export class CommentService {
   async update(
     id: number,
     updateCommentDto: UpdateCommentDto,
-    currentUser,
+    currentUser: UserEntity,
   ): Promise<Comment> {
     await this.getUserId(id, currentUser);
     return this.prisma.comment.update({

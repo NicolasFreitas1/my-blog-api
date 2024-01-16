@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Like, Post, PostTag, Tag } from '@prisma/client';
+import { Comment, Like, Post, PostTag, Tag } from '@prisma/client';
 
-export class PostPresenterResponse {
+export class PostWithCommentsPresenterResponse {
   @ApiProperty()
   id: number;
 
@@ -15,9 +15,6 @@ export class PostPresenterResponse {
   likes: number;
 
   @ApiProperty()
-  isLikedByCurrentUser: boolean;
-
-  @ApiProperty()
   postTag: Tag[];
 
   @ApiProperty()
@@ -28,6 +25,9 @@ export class PostPresenterResponse {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  comments: Comment[];
 }
 
 type PostTagsToTransform = PostTag & {
@@ -35,25 +35,21 @@ type PostTagsToTransform = PostTag & {
 };
 
 export type PostToTransform = Post & {
+  comments: Comment[];
   likes: Like[];
   postTags: PostTagsToTransform[];
 };
 
-export class PostPresenter {
-  static toHTTP(
-    post: PostToTransform,
-    currentUser?: number,
-  ): PostPresenterResponse {
+export class PostWithCommentsPresenter {
+  static toHTTP(post: PostToTransform): PostWithCommentsPresenterResponse {
     return {
       id: post.id,
       authorId: post.authorId,
       title: post.title,
       likes: post.likes.length,
-      isLikedByCurrentUser: currentUser
-        ? post.likes.map((like) => like.userId).includes(currentUser)
-        : false,
       postTag: post.postTags.map((postTag) => postTag.tag),
       excerpt: post.content.substring(0, 80).trimEnd().concat('...'),
+      comments: post.comments,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     };

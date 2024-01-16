@@ -1,12 +1,4 @@
-import {
-  IsInt,
-  IsOptional,
-  IsString,
-  Matches,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   /**
@@ -34,12 +26,4 @@ export class CreateUserDto {
   @IsString()
   @Matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{5,30}$/gm)
   password: string;
-
-  /**
-   * Id do perfil de usuário
-   */
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  userProfileId: number;
 }

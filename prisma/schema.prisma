@@ -17,8 +17,7 @@ model User {
 
   posts    Post[]
   comments Comment[]
-  answers  Answer[]
-  Like     Like[]
+  likes    Like[]
 
   @@map("user")
 }
@@ -33,48 +32,33 @@ model Post {
 
   user     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments Comment[]
-  answers  Answer[]
-  PostTag  PostTag[]
-  Likes    Like[]
+  postTags PostTag[]
+  likes    Like[]
 
   @@map("post")
 }
 
-model Answer {
-  id        Int       @id @default(autoincrement()) @map("id_answer") /// Id da Tabela
-  authorId  Int       @map("id_author") /// Id do criador da resposta
-  postId    Int       @map("id_post") /// Id da postagem que foi respondida
-  content   String    @map("ds_content") @db.VarChar(200) /// Conteúdo da resposta
-  createdAt DateTime  @default(now()) @map("dt_created") /// Data de criação da resposta
-  updatedAt DateTime? @updatedAt @map("dt_updated") /// Data de alteração da resposta
-
-  author   User      @relation(fields: [authorId], references: [id])
-  post     Post      @relation(fields: [postId], references: [id])
-  comments Comment[]
-
-  @@map("answer")
-}
-
 model Comment {
-  id        Int      @id @default(autoincrement()) @map("id_comment") /// Id do comentario
-  authorId  Int      @map("id_author") /// Foreign key Id do usuario 
-  postId    Int?     @map("id_post") /// Foreign key Id da postagem 
-  answerId  Int?     @map("id_answer") /// Foreign key Id da resposta 
-  content   String   @map("ds_comment") @db.VarChar(100) /// Conteudo de cada postagem  
-  createdAt DateTime @default(now()) @map("dt_created") /// Data de criação da postagem
-  updatedAt DateTime @updatedAt @map("dt_updated") /// Data de edição da postagem
+  id              Int      @id @default(autoincrement()) @map("id_comment") /// Id do comentario
+  authorId        Int      @map("id_author") /// Foreign key Id do usuario 
+  postId          Int?     @map("id_post") /// Foreign key Id da postagem 
+  parentCommentId Int?     @map("id_parent_comment") /// Foreign key Id da resposta 
+  content         String   @map("ds_comment") @db.VarChar(100) /// Conteudo de cada postagem  
+  createdAt       DateTime @default(now()) @map("dt_created") /// Data de criação da postagem
+  updatedAt       DateTime @updatedAt @map("dt_updated") /// Data de edição da postagem
 
-  user   User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  answer Answer? @relation(fields: [answerId], references: [id])
+  user     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post     Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment  Comment?  @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  comments Comment[] @relation("parent_comment")
 
   @@map("comment")
 }
 
 model Tag {
-  id      Int       @id @default(autoincrement()) @map("id_tag")
-  name    String    @map("nm_tag") @db.VarChar(100)
-  PostTag PostTag[]
+  id       Int       @id @default(autoincrement()) @map("id_tag")
+  name     String    @map("nm_tag") @db.VarChar(100)
+  postTags PostTag[]
 
   @@map("tag")
 }
@@ -100,5 +84,6 @@ model Like {
   user User @relation(fields: [userId], references: [id])
   post Post @relation(fields: [postId], references: [id])
 
+  @@unique([postId, userId])
   @@map("like")
 }

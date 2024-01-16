@@ -37,17 +37,22 @@ export class CommentController {
     );
   }
 
-  @Post(':answerId/answer')
-  commentOnAnswer(
+  @Post(':commentId/comment')
+  commentOnComment(
     @UserInfo() currentUser: UserEntity,
-    @Param('answerId', ParseIntPipe) answerId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.commentService.commentOnAnswer(
+    return this.commentService.commentOnComment(
       currentUser,
-      answerId,
+      commentId,
       createCommentDto,
     );
+  }
+
+  @Get(':postId/withChildComments')
+  findAllWithChildComments(@Param('postId', ParseIntPipe) postId: number) {
+    return this.commentService.findAllByPostWithChildComments(postId);
   }
 
   @Get(':postId')

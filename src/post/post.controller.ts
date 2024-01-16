@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -41,6 +42,20 @@ export class PostController {
     return this.postService.findAllPosts();
   }
 
+  @Get('filterByTitleOrContent')
+  async filteredByTitleOrContent(
+    @Query('search') search: string,
+  ): Promise<PostPresenterResponse[]> {
+    return await this.postService.filteredByTitleOrContent(search);
+  }
+
+  @Get('filterByTags')
+  async filteredByTagPosts(
+    @Query('search') search: string,
+  ): Promise<PostPresenterResponse[]> {
+    return await this.postService.filteredByTag(search);
+  }
+
   @Get('byCurrentUser')
   findCurrentUserPosts(
     @UserInfo() currentUser: UserEntity,
@@ -55,14 +70,17 @@ export class PostController {
     return this.postService.findAllPostsByUser(userId);
   }
 
-  @Get(':id/withAnswers')
+  @Get(':id/withComments')
   findWithAnswers(@Param('id', ParseIntPipe) id: number) {
-    return this.postService.findWithAnswers(id);
+    return this.postService.findWithComments(id);
   }
 
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number): Promise<PostEntity> {
-    return this.postService.findPostById(id);
+  findById(
+    @UserInfo() currentUser: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.postService.findPostById(id, currentUser);
   }
 
   @Patch(':id')

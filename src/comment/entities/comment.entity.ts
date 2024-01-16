@@ -12,16 +12,16 @@ export class CommentEntity implements Comment {
   /**
    * Id do post relacionado
    */
-  postId: number;
+  postId: number | null;
   /**
    * Id do usuário que fez o comentário
    */
   authorId: number;
 
   /**
-   * Id da resosta
+   * Id do comentário pai
    */
-  answerId: number;
+  parentCommentId: number | null;
   /**
    * Data que foi feito o comentário
    */

@@ -1,4 +1,4 @@
-import { IsString, MaxLength } from 'class-validator';
+import { IsArray, IsString, MaxLength } from 'class-validator';
 
 export class CreatePostDto {
   /**
@@ -17,4 +17,11 @@ export class CreatePostDto {
   @IsString()
   @MaxLength(200)
   content: string;
+
+  /**
+   * Id das Tags que a postagem pertence
+   * @example [1, 2, 3]
+   */
+  @IsArray()
+  tagIds: number[];
 }

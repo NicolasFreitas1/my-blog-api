@@ -34,7 +34,7 @@ async function createTags() {
     { name: 'npm' },
     { name: 'microsserviço' },
     { name: 'estilização-de-código' },
-    { name: 'teste' },
+    { name: 'testes' },
     { name: 'segurança' },
     { name: 'arquitetura-de-software' },
     { name: 'git' },

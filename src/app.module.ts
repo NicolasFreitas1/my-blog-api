@@ -6,18 +6,20 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CommentModule } from './comment/comment.module';
 import { PostModule } from './post/post.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
-import { AnswerModule } from './answer/answer.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    PrismaModule,
-    UserModule,
     AuthModule,
     PostModule,
     CommentModule,
-    AnswerModule,
+    PrismaModule,
+    TagModule,
+    UserModule,
+    LikeModule,
   ],
   providers: [
     {
