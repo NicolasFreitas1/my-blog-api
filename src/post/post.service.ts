@@ -82,14 +82,14 @@ export class PostService {
     return posts.map(PostPresenter.toHTTP);
   }
 
-  async filteredByTag(search: string): Promise<PostPresenterResponse[]> {
+  async filteredByTag(search: string[]): Promise<PostPresenterResponse[]> {
     const posts = await this.prisma.post.findMany({
       where: {
         postTags: {
           some: {
             tag: {
               name: {
-                contains: search,
+                in: search,
                 mode: 'insensitive',
               },
             },

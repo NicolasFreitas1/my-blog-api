@@ -51,7 +51,7 @@ export class PostController {
 
   @Get('filterByTags')
   async filteredByTagPosts(
-    @Query('search') search: string,
+    @Query('search') search: string[],
   ): Promise<PostPresenterResponse[]> {
     return await this.postService.filteredByTag(search);
   }
