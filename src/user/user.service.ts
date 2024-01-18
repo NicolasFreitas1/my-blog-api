@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -34,7 +34,7 @@ export class UserService {
     return this.prisma.user.findUniqueOrThrow({ where: { login } });
   }
 
-  async deleteUser(id: number, currentUser): Promise<User> {
+  async deleteUser(id: number, currentUser: UserEntity): Promise<User> {
     await this.getUserId(id, currentUser);
     return this.prisma.user.delete({ where: { id } });
   }
@@ -50,10 +50,13 @@ export class UserService {
       data: updateUserDto,
     });
   }
+
   async getUserId(id: number, currentUser: UserEntity) {
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id } });
-    if (user.id != currentUser.id) {
-      throw new Error('You cannot delete/edit post of another user');
+    if (user.id != currentUser.id || user.login !== 'ADMIN') {
+      throw new BadRequestException(
+        'You cannot delete/edit user of another user',
+      );
     }
   }
 }

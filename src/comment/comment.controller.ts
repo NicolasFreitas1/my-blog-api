@@ -55,7 +55,7 @@ export class CommentController {
     return this.commentService.findAllByPostWithChildComments(postId);
   }
 
-  @Get(':postId')
+  @Get('byPost/:postId')
   findAll(@Param('postId', ParseIntPipe) postId: number) {
     return this.commentService.findAllByPost(postId);
   }

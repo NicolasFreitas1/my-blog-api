@@ -51,7 +51,7 @@ export class PostPresenter {
       likes: post.likes.length,
       isLikedByCurrentUser: currentUser
         ? post.likes.map((like) => like.userId).includes(currentUser)
-        : false,
+        : null,
       postTag: post.postTags.map((postTag) => postTag.tag),
       excerpt: post.content.substring(0, 80).trimEnd().concat('...'),
       createdAt: post.createdAt,

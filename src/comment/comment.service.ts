@@ -74,7 +74,7 @@ export class CommentService {
     });
   }
 
-  async remove(id: number, currentUser) {
+  async remove(id: number, currentUser: UserEntity) {
     await this.getUserId(id, currentUser);
     return this.prisma.comment.delete({ where: { id } });
   }
